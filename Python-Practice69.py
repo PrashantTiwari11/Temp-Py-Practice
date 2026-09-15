@@ -1,0 +1,32 @@
+# 64_mini_cli_database.py
+# SQLite Mini Database - 10 practical programs/features
+import sqlite3
+
+db = sqlite3.connect(":memory:")
+cur = db.cursor()
+cur.execute("CREATE TABLE students (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, marks INTEGER)")
+print("1. Table created.")
+cur.execute("INSERT INTO students(name,marks) VALUES (?,?)", ("Aman",82))
+print("2. One record inserted.")
+cur.executemany("INSERT INTO students(name,marks) VALUES (?,?)",
+                [("Riya",91),("Karan",76),("Neha",88)])
+db.commit()
+print("3. Multiple records inserted.")
+cur.execute("SELECT * FROM students")
+print("4. All records:", cur.fetchall())
+cur.execute("SELECT * FROM students WHERE name=?", ("Riya",))
+print("5. Search Riya:", cur.fetchone())
+cur.execute("SELECT name,marks FROM students WHERE marks>=?", (85,))
+print("6. Marks >= 85:", cur.fetchall())
+cur.execute("UPDATE students SET marks=? WHERE name=?", (95,"Riya"))
+db.commit()
+print("7. Riya updated.")
+cur.execute("SELECT name,marks FROM students ORDER BY marks DESC")
+print("8. Sorted:", cur.fetchall())
+cur.execute("SELECT AVG(marks) FROM students")
+print("9. Average:", round(cur.fetchone()[0], 2))
+cur.execute("DELETE FROM students WHERE name=?", ("Karan",))
+db.commit()
+cur.execute("SELECT * FROM students")
+print("10. Remaining:", cur.fetchall())
+db.close()
